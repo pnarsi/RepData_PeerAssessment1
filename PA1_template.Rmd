@@ -7,11 +7,23 @@ output:
 
 
 ## Loading and preprocessing the data
+```{r}
+unzip("activity.zip")
+activity_data <- read.csv("activity.csv")
+
+```
 
 
 
 ## What is mean total number of steps taken per day?
 
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+daily_steps <- group_by(activity_data,date) %.% 
+    summarise(total = sum(steps,na.rm = TRUE))
+hist(daily_steps$total)
+
+```
 
 
 ## What is the average daily activity pattern?
