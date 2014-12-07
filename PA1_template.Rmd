@@ -7,7 +7,7 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+```{r, echo=TRUE}
 unzip("activity.zip")
 activity_data <- read.csv("activity.csv")
 
@@ -17,21 +17,93 @@ activity_data <- read.csv("activity.csv")
 
 ## What is mean total number of steps taken per day?
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
 library(dplyr)
 daily_steps <- group_by(activity_data,date) %.% 
     summarise(total = sum(steps,na.rm = TRUE))
-hist(daily_steps$total)
+hist(daily_steps$total, xlab = "Daily Steps", ylab = "Frequency", col="red", 
+     main = "Number of Steps Taken per Day",breaks=10)
+
+mean_steps <-  mean(daily_steps$total, na.rm = TRUE)
+mean_steps
+median_steps <- median(daily_steps$total, na.rm = TRUE)
+median_steps
 
 ```
 
 
+The mean number of steps taken per day is: 
+**`r mean_steps`**  
+The median number of steps taken per day is: 
+**`r median_steps`**
+
 ## What is the average daily activity pattern?
 
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+interval_steps <- group_by(activity_data,interval) %.% summarise(mean_steps=mean(steps,na.rm=TRUE))
+plot(x=interval_steps$interval,y=interval_steps$mean_steps,type = "l",
+     xlab="time of day", ylab = "Average Number of Steps", 
+     main = "Number of Steps over time of Day")
 
+max_steps_interval <- max(interval_steps$mean_steps)
+max_steps_interval
+interval_with_max_steps <- interval_steps[interval_steps$mean_steps == 
+                                              max(interval_steps$mean_steps),1]
+interval_with_max_steps
+```
+
+The interval with the highest average number of steps is **`r interval_with_max_steps`** 
+with an average of **`r max_steps_interval`** steps
 
 ## Imputing missing values
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+
+index_na <-  which(is.na(activity_data$steps))
+num_na <- length(index_na)
+
+# Number of missing values
+num_na
+```
+
+The number of missing values in the dataset is **`r num_na`**
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+
+# create clone of existing data set and replace any data with N/A values by mean for that 
+# period
+
+cleaned_data <- activity_data
+
+for(x in index_na)
+    {
+    cleaned_data[x,1] <- interval_steps[interval_steps$interval == cleaned_data[x,3],2]  
+    }
+cleaned_daily_steps <- group_by(cleaned_data,date) %.% 
+    summarise(total = sum(steps,na.rm = TRUE))
+
+hist(cleaned_daily_steps$total, xlab = "Daily Steps", ylab = "Frequency", col="red", 
+     main = "Number of Steps Taken per Day",breaks=10)
+```
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
+mean_steps <-  mean(cleaned_daily_steps$total, na.rm = TRUE)
+mean_steps
+median_steps <- median(cleaned_daily_steps$total, na.rm = TRUE)
+median_steps
+
+```
 
 
+The mean number of steps taken per day is: 
+**`r mean_steps`**  
+The median number of steps taken per day is: 
+**`r median_steps`**
+
+* Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? *
+
+The imputing of missing data has has increased the step count of many of the days. This has 
+been reflect the histogram by the reduction in the frequency of days in the lowest part of the 
+histogram. The data now looks more like a standard distribution.Furthermore both the mean and
+the median of the dataset has been increased.
 
 ## Are there differences in activity patterns between weekdays and weekends?
