@@ -38,6 +38,9 @@ The mean number of steps taken per day is:
 The median number of steps taken per day is: 
 **`r median_steps`**
 
+Note that the above values and histogram still represents days with no valid number of steps as having zero steps which skews the histogram as well as the mean and median values.  
+
+
 ## What is the average daily activity pattern?
 
 ```{r, message=FALSE, warning=FALSE, echo=TRUE}
@@ -59,6 +62,7 @@ with an average of **`r max_steps_interval`** steps
 ## Imputing missing values
 ```{r, message=FALSE, warning=FALSE, echo=TRUE}
 
+# Get index of missing values
 index_na <-  which(is.na(activity_data$steps))
 num_na <- length(index_na)
 
@@ -108,7 +112,7 @@ The median number of steps taken per day is:
 The imputing of missing data has has increased the step count of many of the days. This has 
 been reflect the histogram by the reduction in the frequency of days in the lowest part of the 
 histogram. The data now looks more like a normal distribution.Furthermore both the mean and
-the median of the dataset has been increased.
+the median of the dataset has been increased.This is to be expected as in the previous section periods with N/A were counted as having a value of 0 which skewed the findings.  
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -127,3 +131,5 @@ xyplot(interval_mean~interval|day_type,ww_data,type = "l",
        main = "Comparision of Mean Number of Steps on Weekends vs Weekdays")
 
 ```
+
+The data for the weekend shows a relatively consistent number of steps between the hours of 08:00 to 19:00. The data for week days has the number of steps between the hours of 08:00 to 09:00 twice as that of the number of steps between 09:00 to 19:00. The average number of steps after 09:00 on weekdays appears to be less than the corresponding period on weekends.    
