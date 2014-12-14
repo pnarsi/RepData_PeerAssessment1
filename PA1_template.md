@@ -53,7 +53,11 @@ The mean number of steps taken per day is:
 The median number of steps taken per day is: 
 **10395**
 
-Note that the above values and histogram still represents days with no valid number of steps as having zero steps which skews the histogram as well as the mean and median values.  
+Note that the above mean value, median values and histogram represents days with no valid number 
+of steps as having zero steps which skews the histogram as well as the mean and median values. 
+An alternative approach would have been to exclude any days with no valid values. As the assignment 
+does not specify a preference of one approach over another, I believe that the approach I have
+taken is valid in the context of this part part of the project. 
 
 
 ## What is the average daily activity pattern?
@@ -91,6 +95,9 @@ The interval with the highest average number of steps is **835**
 with an average of **206** steps
 
 ## Imputing missing values
+
+The strategy used to impute the missing values is to replace the N/A values in the dataset with the average value of the period. 
+
 
 ```r
 # Get index of missing values
